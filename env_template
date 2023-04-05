@@ -3,7 +3,7 @@ GENERIC_RESTART="always"
 COMPOSE_PROJECT_NAME="adempiere-saprod"
 
 # Global settings
-HOST_IP=192.168.0.94
+HOST_IP=192.168.1.21
 HOST_URL=http://${HOST_IP}
 
 TIMEZONE_PATH_ON_HOST="/etc/timezone"
