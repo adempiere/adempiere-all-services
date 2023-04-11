@@ -22,7 +22,7 @@ Just clone it
 Before it you should copy your database to `adempiere-all-service/postgresql/seed.backup`
 
 ```Shell
-git clone https://github.com/erpya/adempiere-all-services
+git clone https://github.com/adempiere/adempiere-all-services
 cd adempiere-all-services
 cp env_template .env
 ```
