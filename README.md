@@ -1,4 +1,5 @@
 # ADempiere All Services
+<<<<<<< HEAD
 This application downloads the required images, runs the configured containers, restores the database if needed on your local machine just by calling a script!
  
 It consists of a *docker compose* project that defines all services needed to run ADempiere on ZK and Vue. 
@@ -14,6 +15,40 @@ Benefits of the application:
 - The timezone and location for all containers are the same as the hosts'.
 - Ideal for testing situations due to its ease of configuration and execution.
 - No need of deep knowledge of Docker, Images or Postgres.
+=======
+All services integrated for run with a docker compose. This is a simple project with compose with all project images.
+
+
+## Run Docker Compose
+
+You can also run it with `docker compose` for develop enviroment. Note that this is a easy way for start the service with PostgreSQL and middleware.
+
+### Requirements
+
+- [Docker Compose v2.16.0 or later](https://docs.docker.com/compose/install/linux/)
+
+```Shell
+docker compose version
+Docker Compose version v2.16.0
+```
+
+## Run it
+
+Just clone it
+
+```Shell
+git clone https://github.com/adempiere/adempiere-all-services
+cd adempiere-all-services
+cp env_template .env
+```
+
+```Shell
+docker compose up
+```
+
+Open browser in the follow url [http://localhost:8080](http://localhost:8080)
+
+>>>>>>> 14dea1a (Update README.md)
 
 ## Example of Application Running
 ![ADempiere Vue](docs/ADempiere_All_Services_Vue.gif)
