@@ -94,10 +94,14 @@ services:
     hostname: ${ADEMPIERE_BACKEND_RS_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
+<<<<<<< HEAD
       - ${ADEMPIERE_BACKEND_RS_EXTERNAL_PORT}:${ADEMPIERE_BACKEND_RS_PORT}
     volumes:
       - ${TIMEZONE_PATH_ON_HOST}:${TIMEZONE_PATH_ON_CONTAINER}:${TIMEZONE_OPTIONS}    # Map the Timezone  of the host to the Timezone of the container
       - ${LOCALTIME_PATH_ON_HOST}:${LOCALTIME_PATH_ON_CONTAINER}:${LOCALTIME_OPTIONS} # Map the Localtime of the host to the Timezone of the container
+=======
+      - ${ADEMPIERE_BACKEND_RS_PORT}:7878
+>>>>>>> 5756f0e (Update docker-compose.yml)
     environment:
       MIDDLEWARE_HOST: http://${ADEMPIERE_MIDDLEWARE_CONTAINER_NAME}:${ADEMPIERE_MIDDLEWARE_PORT}
     depends_on:
