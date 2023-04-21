@@ -1,4 +1,5 @@
-FROM postgres:13
+FROM postgres:14.5
+#FROM postgres:13
 
 #ADD https://github.com/adempiere/adempiere/releases/download/3.9.4/Adempiere_394LTS.tar.gz /tmp/Adempiere_394LTS.tar.gz
 COPY seed.backup /tmp

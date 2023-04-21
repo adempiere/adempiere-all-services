@@ -15,8 +15,8 @@ POSTGRES_NAME="adempiere-all.postgres.database"
 POSTGRES_PASSWORD="adempiere"
 POSTGRES_PORT="5432"
 
-# Adempire ZK
-ADEMPIERE_ZK_IMAGE="marcalwestf/adempiere-zk-ui:jetty-shw-air-terminal-vertical-1.0.0"
+# Adempiere ZK
+ADEMPIERE_ZK_IMAGE="marcalwestf/adempiere-zk-ui:jetty-shw-air-terminal-vertical-1.0.5"
 ADEMPIERE_ZK_PORT=8888
 ADEMPIERE_NAME="adempiere-all.adempiere.zk"
 
