@@ -36,7 +36,7 @@ Additional objects defined in *docker-compose.yml*
 - *start-all.sh*: shell script to start docker compose.
 - *stop-and-delete-all.sh*: shell script to delete all containers, images, networks and volumnes created with *start-all.sh*
 - *postgresql/Dockerfile*: the Dockerfile used.
-- *postgresql/initdb.sh*: Postgres starting shell script.It launches a restore database when there is none and a backup exists.
+- *postgresql/initdb.sh*: Postgres starting shell script. It launches a restore database when there is none and a backup exists.
 - *postgresql/postgres_database*: the mounting point on the host for the database from the Postgres Container. This makes sure that the database is not deleted even if the docker containers, docker images and even docker are deleted.
 - *postgresql/backups*: the mounting point for the backups/restores from the Postgres Container.
 
@@ -84,7 +84,7 @@ mkdir postgresql/postgres_database
 ```Shell
 mkdir postgresql/backups
 ```
-- If you're executing this project for the first time or you want to restore the database, copy a database backup (the fie must be named `seed.backup`) to `adempiere-all-service/postgresql/backups`. Make sure it is not the compressed backup:
+- If you're executing this project for the first time or you want to restore the database, copy a database backup (the file must be named `seed.backup`) to `adempiere-all-service/postgresql/backups`. Make sure it is not the compressed backup:
 ```Shell
 cp <PATH-TO-BACKUP-FILE> postgresql/backups
 ```
@@ -98,17 +98,20 @@ cp env_template .env
 ```Shell
 docker compose up -d
 ```
+
 **Result: all images are downloaded, containers and other docker objects created, containers are started, and database restored**.
 This might take some time, depending on your bandwith and the size of the restore file.
 ### Automatic Execution
 Alternative to **Manual Execution**.
 Recommendable when docker compose was run before.
+
 Execute script `start-all.sh`:
 ```Shell
 ./start-all.sh
 ```
 The script *start-all.sh* carries out the steps of the manual installation.
 If directories *postgresql/postgres_database* and *postgresql/backups* do not exist, they are created.
+
 If 
 - there is a file *seed.backup* in *postgresql/backups*, and 
 - the database as specified in *postgresql/initdb.sh* does not exist in Postgres, and
@@ -116,6 +119,8 @@ If
 
 The database  will be restored.
 If directory *postgresql/postgres_database* has contents, no restore will be executed (actually, *postgresql/initdb.sh* will be ignored).
+
+
 **Result: all images are downloaded, containers and other docker objects created, containers are started, and -depending on conditions explained before- database restored**.
 This might take some time, depending on your bandwith and the size of the restore file.
 ## Open Applications
@@ -134,6 +139,7 @@ docker compose down
 ```
 ## Delete All Docker Objects
 Sometimes, you need to undo everything and start anew.
+
 Then, 
 - All Docker containers must be shut down.
 - All Docker containers must be deleted.
