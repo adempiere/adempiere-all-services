@@ -1,12 +1,23 @@
 #!/bin/bash
 
-# Directory needed for storing the Postgres database
-FILE=postgresql/postgres_database
-if [ ! -d "$FILE" ]; then
-    echo "Create directory $FILE"
-    mkdir $FILE
+# Directory needed for storing the Postgres database.
+# Directory will be created only if inexistent.
+DBFILE=postgresql/postgres_database
+if [ ! -d "$DBFILE" ]; then
+    echo "Create directory $DBFILE"
+    mkdir $DBFILE
 else
-    echo "Directory $FILE exists already: no need to create it"
+    echo "Directory $DBFILE exists already: no need to create it"
+fi
+
+# Backup directory for storing the Postgres backup file.
+# The name of the backup file must be "seed.backup"
+BACKUPFILE=postgresql/backups
+if [ ! -d "$BACKUPFILE" ]; then
+    echo "Create directory $BACKUPFILE"
+    mkdir $BACKUPFILE
+else
+    echo "Directory $BACKUPFILE exists already: no need to create it"
 fi
 
 cp env_template .env
