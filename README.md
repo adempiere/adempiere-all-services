@@ -1,5 +1,6 @@
 # ADempiere All Services
  A *docker compose* project defines all services needed to run ADempiere on ZK and Vue. 
+ 
  When executed, the *docker compose* project eventually runs the services defined in file *docker-compose.yml* as Docker containers.
  The running Docker containers comprise the application.
 
@@ -24,7 +25,7 @@ The application stack consists of the following services defined in *docker-comp
 
 Additional objects defined in *docker-compose.yml*
 - *adempiere_network*: defines the subnet used in the involved Docker containers (**192.168.100.0/24**)
-- *volume_postgres*: defines the mounting point of the Postgres database (directory **/var/lib/postgresql/data**) to a local directrory on the host where the Docker container runs.
+- *volume_postgres*: defines the mounting point of the Postgres database (directory **/var/lib/postgresql/data**) to a local directory on the host where the Docker container runs.
 - *volume_backups*: defines the mounting point of a backup directory on the Docker container to a local directrory on the host where the Docker container runs.
 
 ### File Structure
@@ -33,12 +34,12 @@ Additional objects defined in *docker-compose.yml*
   Variables used in this file are taken from file *.env*.
 - *.env*: definition of all variables used in *docker-compose.yml*.
 - *env_template*: template for definition of all variables.
-- *start-all.sh*: shell script to start docker compose.
+- *start-all.sh*: shell script to automatically execute docker compose.
 - *stop-and-delete-all.sh*: shell script to delete all containers, images, networks and volumnes created with *start-all.sh*
 - *postgresql/Dockerfile*: the Dockerfile used.
-- *postgresql/initdb.sh*: Postgres starting shell script. It launches a restore database when there is none and a backup exists.
-- *postgresql/postgres_database*: the mounting point on the host for the database from the Postgres Container. This makes sure that the database is not deleted even if the docker containers, docker images and even docker are deleted.
-- *postgresql/backups*: the mounting point for the backups/restores from the Postgres Container.
+- *postgresql/initdb.sh*: shell script executed when Postgres starts. It launches a restore database when there is no database and a backup exists.
+- *postgresql/postgres_database*: mounting point on the host for the Postgres container's database. This makes sure that the database is not deleted even if the docker containers, docker images and even docker are deleted.
+- *postgresql/backups*: the mounting point for the backups/restores from the Postgres container.
 
 ## Installation
 ### Requirements
@@ -76,15 +77,16 @@ cd adempiere-all-services
 ### Manual Execution
 Alternative to **Automatic Execution**.
 Recommendable for the first installation.
-- Create the directory where the database will be mounted:
+- Create the directory on the host where the database will be mounted:
 ```Shell
 mkdir postgresql/postgres_database
 ```
-- Create the directory where the backups will be mounted:
+- Create the directory on the host where the backups will be mounted:
 ```Shell
 mkdir postgresql/backups
 ```
-- If you're executing this project for the first time or you want to restore the database, copy a database backup (the file must be named `seed.backup`) to `adempiere-all-service/postgresql/backups`. Make sure it is not the compressed backup:
+- If you're executing this project for the first time or you want to restore the database, copy a database backup (the file must be named `seed.backup`) to `adempiere-all-service/postgresql/backups`. 
+Make sure it is not the compressed backup (e.g. .jar):
 ```Shell
 cp <PATH-TO-BACKUP-FILE> postgresql/backups
 ```
@@ -93,13 +95,14 @@ cp <PATH-TO-BACKUP-FILE> postgresql/backups
 cp env_template .env
 ```
 - Modify `postgresql/initdb.sh` as necessary, depending on the backup file you are using. 
-  A different restore command is needed in postgresql/initdb.sh depending on the way the backup was done (*RUN_DBExport.sh* or *pg_dump*).
+  A different restore command is needed in *postgresql/initdb.sh* depending on the way the backup was done (*RUN_DBExport.sh* or *pg_dump*).
 - Run `docker compose`:
 ```Shell
 docker compose up -d
 ```
 
 **Result: all images are downloaded, containers and other docker objects created, containers are started, and database restored**.
+
 This might take some time, depending on your bandwith and the size of the restore file.
 ### Automatic Execution
 Alternative to **Manual Execution**.
@@ -117,21 +120,24 @@ If
 - the database as specified in *postgresql/initdb.sh* does not exist in Postgres, and
 - directory *postgresql/postgres_database* has no contents
 
-The database  will be restored.
+**The database  will be restored**.
+
 If directory *postgresql/postgres_database* has contents, no restore will be executed (actually, *postgresql/initdb.sh* will be ignored).
 
 
 **Result: all images are downloaded, containers and other docker objects created, containers are started, and -depending on conditions explained before- database restored**.
+
 This might take some time, depending on your bandwith and the size of the restore file.
 ## Open Applications
 - Project site: open browser and type in the following url [http://localhost:8080](http://localhost:8080)
+
   From here, the user can navigate to ZK UI or Vue UI.
 - Adempiere ZK: open browser and type in the following url [http://localhost:8888/webui](http://localhost:8888/webui)
 - Adempiere Vue:open browser and type in the following url [http://localhost:8891/#/login?redirect=%2Fdashboard](http://localhost:8891/#/login?redirect=%2Fdashboard)
 ## Close Containers
 - All containers will shut down.
 - The database will be preserved.
-- All docker images, noetworks, and volumes will be preserved.
+- All docker images, networks, and volumes will be preserved.
 
 Execute command:
 ```Shell
@@ -145,7 +151,7 @@ Then,
 - All Docker containers must be deleted.
 - All Docker images must be deleted.
 - The Docker installation cache must be cleared.
-- All Docker networks and volumesmust be deleted.
+- All Docker networks and volumes must be deleted.
 
 Execute command:
 ```Shell
