@@ -138,11 +138,23 @@ This might take some time, depending on your bandwith and the size of the restor
 - All containers will shut down.
 - The database will be preserved.
 - All docker images, networks, and volumes will be preserved.
-
-Execute command:
 ```Shell
 docker compose down
 ```
+- Stop and delete one service
+```Shell
+docker compose rm -s -f adempiere.db
+docker compose rm -s -f adempiere-zk
+```
+- Stop and delete all services
+```Shell
+docker compose rm -s -f
+```
+- Create and restart all services
+```Shell
+docker compose up -d
+```
+
 ## Delete All Docker Objects
 Sometimes, you need to undo everything and start anew.
 
