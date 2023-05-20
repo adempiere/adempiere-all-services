@@ -105,6 +105,20 @@ services:
         condition: service_healthy
     networks:
       - adempiere_network
+  
+  adempiere-scheduler:
+    image: ${ADEMPIERE_SCHEDULER_IMAGE}
+    container_name: ${ADEMPIERE_SCHEDULER_HOST}
+    restart: ${GENERIC_RESTART}
+    ports:
+      - ${ADEMPIERE_SCHEDULER_PORT}:8080
+    command:
+      - "agent"
+      - "--bootstrap-expect=1"
+      - "--node-name=node1"
+      - "--server"
+    networks:
+      - adempiere_network
       
   adempiere-grpc-server:
     image: ${ADEMPIERE_GRPC_SERVER_IMAGE}

@@ -62,6 +62,10 @@ VS_ENV=dev
 INDEX=adempiere
 VUE_API_PORT=8890
 
+ADEMPIERE_SCHEDULER_IMAGE="dkron/dkron"
+ADEMPIERE_SCHEDULER_HOST=adempiere-all.adempiere.scheduler
+ADEMPIERE_SCHEDULER_PORT=8879
+
 # Networks
 ADEMPIERE_NETWORK="adempiere-all.adempiere_network"
 
