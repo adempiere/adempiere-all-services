@@ -26,7 +26,7 @@ ADEMPIERE_NAME="adempiere-all.adempiere.zk"
 ADEMPIERE_HOSTNAME="zk-server-container"
 
 # ADempiere gRPC Server
-ADEMPIERE_GRPC_SERVER_IMAGE="marcalwestf/adempiere-grpc-server:shw-air-terminal-vertical-1.0.0"
+ADEMPIERE_GRPC_SERVER_IMAGE="marcalwestf/adempiere-grpc-server:shw-air-terminal-vertical-1.0.1"
 VUE_BACKEND_HOST="adempiere-all.adempiere.vue.backend"
 VUE_BACKEND_HOSTNAME="grpc-server-container"
 SECRET_KEY="A42CF908019918B1D9D9E04E596658345D162D4C0127A4C8365E8BDF6B015CC7"
@@ -46,14 +46,14 @@ ADEMPIERE_BACKEND_RS_HOST="adempiere-all.adempiere.backend.rs"
 ADEMPIERE_BACKEND_RS_HOSTNAME="backend-server-container"
 
 # UI
-VUE_UI_IMAGE="solopcloud/adempiere-vue:experimental-2.2.3"
+VUE_UI_IMAGE="solopcloud/adempiere-vue:experimental-2.3.1"
 VUE_UI_URL=0.0.0.0
 VUE_UI_HOST="adempiere-all.vue"
 VUE_UI_HOSTNAME="vue-ui-server-container"
 VUE_UI_PORT=8891
 
 # API
-VUE_API_IMAGE="solopcloud/adempiere-proxy:experimental-1.7.3"
+VUE_API_IMAGE="solopcloud/adempiere-proxy:experimental-1.9.2"
 VUE_API_HOST="adempiere-all.vue.api"
 VUE_API_HOSTNAME="vue-api-server-container"
 ES_HOST=localhost
