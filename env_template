@@ -53,7 +53,7 @@ VUE_UI_HOSTNAME="vue-ui-server-container"
 VUE_UI_PORT=8891
 
 # API
-VUE_API_IMAGE="solopcloud/adempiere-proxy:experimental-1.9.2"
+VUE_API_IMAGE="solopcloud/adempiere-proxy:experimental-1.8.5"
 VUE_API_HOST="adempiere-all.vue.api"
 VUE_API_HOSTNAME="vue-api-server-container"
 ES_HOST=localhost
