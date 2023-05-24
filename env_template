@@ -20,7 +20,7 @@ POSTGRES_EXTERNAL_PORT="55432"
 
 # Adempiere ZK
 # Look for newest tag at https://hub.docker.com/r/marcalwestf/adempiere-zk-ui/tags
-ADEMPIERE_ZK_IMAGE="marcalwestf/adempiere-zk-ui:jetty-shw-air-terminal-vertical-1.0.9"
+ADEMPIERE_ZK_IMAGE="marcalwestf/adempiere-zk-ui:jetty-shw-air-terminal-vertical-1.0.10"
 ADEMPIERE_ZK_PORT=8888
 ADEMPIERE_NAME="adempiere-all.adempiere.zk"
 ADEMPIERE_HOSTNAME="zk-server-container"
