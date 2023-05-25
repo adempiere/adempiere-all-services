@@ -47,7 +47,7 @@ ADEMPIERE_BACKEND_RS_HOSTNAME="backend-server-container"
 
 # UI
 VUE_UI_IMAGE="solopcloud/adempiere-vue:experimental-2.3.1"
-VUE_UI_URL=0.0.0.0
+VUE_UI_URL=192.168.0.94
 VUE_UI_HOST="adempiere-all.vue"
 VUE_UI_HOSTNAME="vue-ui-server-container"
 VUE_UI_PORT=8891
