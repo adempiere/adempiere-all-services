@@ -6,7 +6,7 @@ COMPOSE_PROJECT_NAME="adempiere"
 ADEMPIERE_SITE_IMAGE="openls/adempiere-landing-page:1.0.1"
 ADEMPIERE_SITE="adempiere-all.adempiere.site"
 ADEMPIERE_SITE_HOSTNAME="site-server-container"
-VUE_HOST="http://0.0.0.0"
+VUE_HOST="http://192.168.0.94"
 ZK_HOST="http://0.0.0.0"
 ADEMPIERE_SITE_PORT=8080
 
