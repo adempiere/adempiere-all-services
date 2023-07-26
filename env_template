@@ -3,7 +3,7 @@ GENERIC_RESTART="always"
 COMPOSE_PROJECT_NAME="adempiere-all"
 
 # Main Frontend
-ADEMPIERE_SITE_IMAGE="erpya/adempiere-landing-page:1.0.1"
+ADEMPIERE_SITE_IMAGE="erpya/adempiere-landing-page:1.0.2"
 ADEMPIERE_SITE="adempiere-all.adempiere.site"
 VUE_HOST="http://0.0.0.0"
 ZK_HOST="http://0.0.0.0"
@@ -14,6 +14,7 @@ POSTGRES_IMAGE="postgres:13"
 POSTGRES_NAME="adempiere-all.postgres.database"
 POSTGRES_PASSWORD="adempiere"
 POSTGRES_PORT="5432"
+POSTGRES_VOLUME="adempiere-all.volume_postgres"
 
 # Adempire ZK
 ADEMPIERE_ZK_IMAGE="openls/adempiere-zk-ui:jetty-1.0.5"
@@ -24,29 +25,29 @@ ADEMPIERE_NAME="adempiere-all.adempiere.zk"
 ADEMPIERE_GRPC_SERVER_IMAGE="solopcloud/adempiere-backend:1.9.0"
 VUE_BACKEND_HOST=adempiere-all.adempiere.vue.backend
 SECRET_KEY="A42CF908019918B1D9D9E04E596658345D162D4C0127A4C8365E8BDF6B015CC7"
-SERVICES_ENABLED="business; business_partner; core; dashboarding; dictionary; enrollment; express_shipment; file_management; general_ledger; in_out; invoice; issue_management; log; material_management; order; payment; payment_print_export; payroll_action_notice; pos; product; security; store; time_control; time_record; ui; user_customization; workflow;"
+SERVICES_ENABLED="bank_statement_match; business; business_partner; core; dashboarding; dictionary; enrollment; express_movement; express_receipt; express_shipment; file_management; general_ledger; in_out; invoice; issue_management; log; match_po_receipt_invoice; material_management; order; payment; payment_allocation; payment_print_export; payroll_action_notice; pos; product; security; store; time_control; time_record; ui; user_customization; workflow;"
 
 
 # Middleware Name
 ADEMPIERE_MIDDLEWARE_IMAGE="openls/adempiere-middleware:rs-1.2.5"
 MIDDLEWARE_HOST="adempiere-all.adempiere.middleware"
-SERVER_PRIVATE_KEY="A42CF908019918B1D9D9E04E596658345D162D4C0127A4C8365E8BDF6B015CC7"
 
 
 # ADempiere Backend RS
-ADEMPIERE_BACKEND_RS_IMAGE="openls/adempiere-backend-rs:1.0.1"
+ADEMPIERE_BACKEND_RS_IMAGE="openls/adempiere-backend-rs:1.0.4"
 ADEMPIERE_BACKEND_RS_HOST=adempiere-all.adempiere.backend.rs
 ADEMPIERE_BACKEND_RS_PORT=8889
 
 # UI
-VUE_UI_IMAGE="solopcloud/adempiere-vue:experimental-2.2.3"
+VUE_UI_IMAGE="solopcloud/adempiere-vue:experimental-2.5.6"
 VUE_UI_URL=0.0.0.0
 VUE_UI_HOST=adempiere-all.vue
 VUE_UI_PORT=8891
 TASK_MANAGER_URL="http://0.0.0.0:8879"
 
+
 # API
-VUE_API_IMAGE="solopcloud/adempiere-proxy:experimental-1.7.3"
+VUE_API_IMAGE="solopcloud/adempiere-proxy:alpine-2.0.9"
 VUE_API_HOST=adempiere-all.vue.api
 ES_HOST=localhost
 ES_PORT="9200"
@@ -57,7 +58,16 @@ VUE_API_PORT=8890
 ADEMPIERE_SCHEDULER_IMAGE="dkron/dkron"
 ADEMPIERE_SCHEDULER_HOST=adempiere-all.adempiere.scheduler
 ADEMPIERE_SCHEDULER_PORT=8879
+ADEMPIERE_SCHEDULER_VOLUME="adempiere-all.volume_scheduler"
+
+# S3
+S3_IMAGE=quay.io/minio/minio
+S3_HOST=adempiere-all.s3
+S3_PORT=6075
+S3_CONSOLE_PORT=6077
+S3_USER=adempiere
+S3_PASSWORD=adempiere
+S3_VOLUME="adempiere-all.volume_s3"
 
 # Networks
 ADEMPIERE_NETWORK="adempiere-all.adempiere_network"
-POSTGRES_NETWORK="adempiere-all.volume_postgres"
