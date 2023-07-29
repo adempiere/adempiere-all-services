@@ -20,7 +20,7 @@ POSTGRES_EXTERNAL_PORT="55432"
 
 # Adempiere ZK
 # Look for newest tag at https://hub.docker.com/r/marcalwestf/adempiere-zk-ui/tags
-ADEMPIERE_ZK_IMAGE="marcalwestf/adempiere-zk-ui:jetty-shw-air-terminal-vertical-1.0.29"
+ADEMPIERE_ZK_IMAGE="marcalwestf/adempiere-zk-ui:jetty-shw-air-terminal-vertical-1.0.30"
 ADEMPIERE_ZK_PORT=8888
 ADEMPIERE_NAME="adempiere-all.adempiere.zk"
 ADEMPIERE_HOSTNAME="zk-server-container"
@@ -34,7 +34,7 @@ SERVICES_ENABLED="business; business_partner; core; dashboarding; dictionary; en
 
 
 # Middleware Name
-ADEMPIERE_MIDDLEWARE_IMAGE="erpya/adempiere-middleware:1.0.1"
+ADEMPIERE_MIDDLEWARE_IMAGE="marcalwestf/adempiere-middleware:alpine-1.0.1"
 MIDDLEWARE_HOST="adempiere-all.adempiere.middleware"
 MIDDLEWARE_HOSTNAME="middleware-server-container"
 SERVER_PRIVATE_KEY="A42CF908019918B1D9D9E04E596658345D162D4C0127A4C8365E8BDF6B015CC7"
