@@ -9,9 +9,12 @@ services:
     image: ${POSTGRES_NAME}
     restart: ${GENERIC_RESTART}
     ports:
-      - ${POSTGRES_PORT}
+      - ${POSTGRES_EXTERNAL_PORT}:${POSTGRES_PORT} 
     volumes:
       - volume_postgres:/var/lib/postgresql/data
+      - volume_backups:/home/westfalia/backups
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     healthcheck:
       test: "bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/127.0.0.1/5432; exit $?;'"
       interval: 10s
@@ -29,6 +32,9 @@ services:
     restart: ${GENERIC_RESTART}
     ports:
       - ${ADEMPIERE_ZK_PORT}:8080
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     environment:
       ADEMPIERE_DB_SERVER: ${POSTGRES_NAME} #adempiere.db
     depends_on:
@@ -43,6 +49,9 @@ services:
     restart: ${GENERIC_RESTART}
     ports:
       - ${ADEMPIERE_SITE_PORT}:80
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     environment:
       ZK_HOST: ${ZK_HOST}:${ADEMPIERE_ZK_PORT}
       VUE_HOST: ${VUE_HOST}:${VUE_UI_PORT}
@@ -57,6 +66,9 @@ services:
     restart: ${GENERIC_RESTART}
     ports:
       - 50059
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     healthcheck:
       test: "bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/127.0.0.1/50059; exit $?;'"
       interval: 10s
@@ -65,7 +77,6 @@ services:
       timeout: 10s
     environment:
       DB_HOST: ${POSTGRES_NAME}
-      SERVER_PRIVATE_KEY: ${SERVER_PRIVATE_KEY}
     depends_on:
       adempiere.db:
         condition: service_healthy
@@ -77,7 +88,10 @@ services:
     container_name: ${ADEMPIERE_BACKEND_RS_HOST}
     restart: ${GENERIC_RESTART}
     ports:
-      - ${ADEMPIERE_BACKEND_RS_PORT}:7878
+      - 8889
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     environment:
       MIDDLEWARE_HOST: http://${MIDDLEWARE_HOST}:50059
     depends_on:
@@ -97,6 +111,7 @@ services:
       - "--bootstrap-expect=1"
       - "--node-name=node1"
       - "--server"
+      - "--ui=false"
     networks:
       - adempiere_network
       
@@ -106,6 +121,9 @@ services:
     restart: ${GENERIC_RESTART}
     ports:
       - 50059
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro  
     healthcheck:
       test: "bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/127.0.0.1/50059; exit $?;'"
       interval: 10s
@@ -127,7 +145,10 @@ services:
     container_name: ${VUE_API_HOST}
     restart: ${GENERIC_RESTART}
     ports:
-      - ${VUE_API_PORT}:8085
+      - ${VUE_API_PORT}:8890
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     healthcheck:
       test: "bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/$(hostname)/8085; exit $?;'"
       interval: 10s
@@ -157,16 +178,37 @@ services:
     container_name: ${VUE_UI_HOST}
     restart: ${GENERIC_RESTART}
     ports:
-      - ${VUE_UI_PORT}:80
+      - ${VUE_UI_PORT}:8891
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     environment:
       API_URL: http://${VUE_UI_URL}:${VUE_API_PORT}
+      TASK_MANAGER_URL: ${TASK_MANAGER_URL}
     networks:
       - adempiere_network
-      
+
 networks:
   adempiere_network:
     name: ${ADEMPIERE_NETWORK}
-    
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.100.0/24      # Set subnet for all containers created.
+          gateway: 192.168.100.1
+          # ip-range: 192.168.10.0/24   # supposedly not allowed
+
 volumes:
   volume_postgres:
-    name: ${POSTGRES_NETWORK}
+    name: ${POSTGRES_VOLUME}
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/postgresql/postgres_database # Must be created before calling docker compose. The database will be located locally here.
+  volume_backups:
+    name: ${BACKUPS_VOLUME}
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/postgresql/backups # Must be created before calling docker compose. Backups must be copied here to be restored.
