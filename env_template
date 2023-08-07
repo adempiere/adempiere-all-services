@@ -1,53 +1,53 @@
 ## Generic Restart
 GENERIC_RESTART="always"
-COMPOSE_PROJECT_NAME="adempiere-all"
+COMPOSE_PROJECT_NAME="adempiere-sistemas-aereos"
 
 # Main Frontend
 ADEMPIERE_SITE_IMAGE="erpya/adempiere-landing-page:1.0.1"
-ADEMPIERE_SITE="adempiere-all.adempiere.site"
-VUE_HOST="http://0.0.0.0"
-ZK_HOST="http://0.0.0.0"
+ADEMPIERE_SITE="adempiere-sistemas-aereos.adempiere.site"
+VUE_HOST="http://192.168.1.21"
+ZK_HOST="http://192.168.1.21"
 ADEMPIERE_SITE_PORT=8080
 
 # Database 
 POSTGRES_IMAGE="postgres:13"
-POSTGRES_NAME="adempiere-all.postgres.database"
+POSTGRES_NAME="adempiere-sistemas-aereos.postgres.database"
 POSTGRES_PASSWORD="adempiere"
 POSTGRES_PORT="5432"
 
 # Adempire ZK
 ADEMPIERE_ZK_IMAGE="openls/adempiere-zk-ui:jetty-1.0.5"
 ADEMPIERE_ZK_PORT=8888
-ADEMPIERE_NAME="adempiere-all.adempiere.zk"
+ADEMPIERE_NAME="adempiere-sistemas-aereos.adempiere.zk"
 
 # ADempiere gRPC Server
 ADEMPIERE_GRPC_SERVER_IMAGE="solopcloud/adempiere-backend:1.9.0"
-VUE_BACKEND_HOST=adempiere-all.adempiere.vue.backend
+VUE_BACKEND_HOST=adempiere-sistemas-aereos.adempiere.vue.backend
 SECRET_KEY="A42CF908019918B1D9D9E04E596658345D162D4C0127A4C8365E8BDF6B015CC7"
 SERVICES_ENABLED="business; business_partner; core; dashboarding; dictionary; enrollment; express_shipment; file_management; general_ledger; in_out; invoice; issue_management; log; material_management; order; payment; payment_print_export; payroll_action_notice; pos; product; security; store; time_control; time_record; ui; user_customization; workflow;"
 
 
 # Middleware Name
 ADEMPIERE_MIDDLEWARE_IMAGE="openls/adempiere-middleware:rs-1.2.5"
-MIDDLEWARE_HOST="adempiere-all.adempiere.middleware"
+MIDDLEWARE_HOST="adempiere-sistemas-aereos.adempiere.middleware"
 SERVER_PRIVATE_KEY="A42CF908019918B1D9D9E04E596658345D162D4C0127A4C8365E8BDF6B015CC7"
 
 
 # ADempiere Backend RS
 ADEMPIERE_BACKEND_RS_IMAGE="openls/adempiere-backend-rs:1.0.1"
-ADEMPIERE_BACKEND_RS_HOST=adempiere-all.adempiere.backend.rs
+ADEMPIERE_BACKEND_RS_HOST=adempiere-sistemas-aereos.adempiere.backend.rs
 ADEMPIERE_BACKEND_RS_PORT=8889
 
 # UI
 VUE_UI_IMAGE="solopcloud/adempiere-vue:experimental-2.2.3"
 VUE_UI_URL=0.0.0.0
-VUE_UI_HOST=adempiere-all.vue
+VUE_UI_HOST=adempiere-sistemas-aereos.vue
 VUE_UI_PORT=8891
-TASK_MANAGER_URL="http://0.0.0.0:8879"
+TASK_MANAGER_URL="http://192.168.1.21:8879"
 
 # API
 VUE_API_IMAGE="solopcloud/adempiere-proxy:experimental-1.7.3"
-VUE_API_HOST=adempiere-all.vue.api
+VUE_API_HOST=adempiere-sistemas-aereos.vue.api
 ES_HOST=localhost
 ES_PORT="9200"
 VS_ENV=dev
@@ -55,9 +55,9 @@ INDEX=adempiere
 VUE_API_PORT=8890
 
 ADEMPIERE_SCHEDULER_IMAGE="dkron/dkron"
-ADEMPIERE_SCHEDULER_HOST=adempiere-all.adempiere.scheduler
+ADEMPIERE_SCHEDULER_HOST=adempiere-sistemas-aereos.adempiere.scheduler
 ADEMPIERE_SCHEDULER_PORT=8879
 
 # Networks
-ADEMPIERE_NETWORK="adempiere-all.adempiere_network"
-POSTGRES_NETWORK="adempiere-all.volume_postgres"
+ADEMPIERE_NETWORK="adempiere-sistemas-aereos.adempiere_network"
+POSTGRES_NETWORK="adempiere-sistemas-aereos.volume_postgres"
