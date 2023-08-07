@@ -16,19 +16,19 @@ POSTGRES_PASSWORD="adempiere"
 POSTGRES_PORT="5432"
 
 # Adempire ZK
-ADEMPIERE_ZK_IMAGE="openls/adempiere-zk-ui:jetty-1.0.5"
+ADEMPIERE_ZK_IMAGE="marcalwestf/adempiere-zk-ui:jetty-shw-air-terminal-vertical-1.0.30"
 ADEMPIERE_ZK_PORT=8888
 ADEMPIERE_NAME="adempiere-sistemas-aereos.adempiere.zk"
 
 # ADempiere gRPC Server
-ADEMPIERE_GRPC_SERVER_IMAGE="solopcloud/adempiere-backend:1.9.0"
+ADEMPIERE_GRPC_SERVER_IMAGE="marcalwestf/adempiere-grpc-server:shw-air-terminal-vertical-1.0.1"
 VUE_BACKEND_HOST=adempiere-sistemas-aereos.adempiere.vue.backend
 SECRET_KEY="A42CF908019918B1D9D9E04E596658345D162D4C0127A4C8365E8BDF6B015CC7"
 SERVICES_ENABLED="business; business_partner; core; dashboarding; dictionary; enrollment; express_shipment; file_management; general_ledger; in_out; invoice; issue_management; log; material_management; order; payment; payment_print_export; payroll_action_notice; pos; product; security; store; time_control; time_record; ui; user_customization; workflow;"
 
 
 # Middleware Name
-ADEMPIERE_MIDDLEWARE_IMAGE="openls/adempiere-middleware:rs-1.2.5"
+ADEMPIERE_MIDDLEWARE_IMAGE="marcalwestf/adempiere-middleware:1.0.1"
 MIDDLEWARE_HOST="adempiere-sistemas-aereos.adempiere.middleware"
 SERVER_PRIVATE_KEY="A42CF908019918B1D9D9E04E596658345D162D4C0127A4C8365E8BDF6B015CC7"
 
