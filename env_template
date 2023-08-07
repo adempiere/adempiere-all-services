@@ -46,7 +46,7 @@ VUE_UI_PORT=8891
 TASK_MANAGER_URL="http://192.168.1.21:8879"
 
 # API
-VUE_API_IMAGE="solopcloud/adempiere-proxy:apline-2.1.6"
+VUE_API_IMAGE="solopcloud/adempiere-proxy:alpine-2.1.6"
 VUE_API_HOST=adempiere-sistemas-aereos.vue.api
 ES_HOST=localhost
 ES_PORT="9200"
