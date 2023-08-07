@@ -3,7 +3,7 @@ GENERIC_RESTART="always"
 COMPOSE_PROJECT_NAME="adempiere-sistemas-aereos"
 
 # Main Frontend
-ADEMPIERE_SITE_IMAGE="erpya/adempiere-landing-page:1.0.1"
+ADEMPIERE_SITE_IMAGE="openls/adempiere-landing-page:1.0.1"
 ADEMPIERE_SITE="adempiere-sistemas-aereos.adempiere.site"
 VUE_HOST="http://192.168.1.21"
 ZK_HOST="http://192.168.1.21"
@@ -39,14 +39,14 @@ ADEMPIERE_BACKEND_RS_HOST=adempiere-sistemas-aereos.adempiere.backend.rs
 ADEMPIERE_BACKEND_RS_PORT=8889
 
 # UI
-VUE_UI_IMAGE="solopcloud/adempiere-vue:experimental-2.2.3"
+VUE_UI_IMAGE="solopcloud/adempiere-vue:2.6.7"
 VUE_UI_URL=0.0.0.0
 VUE_UI_HOST=adempiere-sistemas-aereos.vue
 VUE_UI_PORT=8891
 TASK_MANAGER_URL="http://192.168.1.21:8879"
 
 # API
-VUE_API_IMAGE="solopcloud/adempiere-proxy:experimental-1.7.3"
+VUE_API_IMAGE="solopcloud/adempiere-proxy:apline-2.1.6"
 VUE_API_HOST=adempiere-sistemas-aereos.vue.api
 ES_HOST=localhost
 ES_PORT="9200"
