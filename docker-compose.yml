@@ -5,9 +5,9 @@ services:
     build:
       context: postgresql/
       dockerfile: Dockerfile
-    container_name: ${POSTGRES_NAME}
+    container_name: ${POSTGRES_CONTAINER_NAME}
     hostname: ${POSTGRES_HOSTNAME}
-    image: ${POSTGRES_NAME}
+    image: ${POSTGRES_IMAGE}
     restart: ${GENERIC_RESTART}
     ports:
       - ${POSTGRES_EXTERNAL_PORT}:${POSTGRES_PORT}          # Set a fixed external port
@@ -29,8 +29,8 @@ services:
       
   adempiere-zk:
     image: ${ADEMPIERE_ZK_IMAGE}
-    container_name: ${ADEMPIERE_NAME}
-    hostname: ${ADEMPIERE_HOSTNAME}
+    container_name: ${ADEMPIERE_ZK_CONTAINER_NAME}
+    hostname: ${ADEMPIERE_ZK_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
       - ${ADEMPIERE_ZK_PORT}:8080
@@ -38,7 +38,7 @@ services:
       - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
       - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
     environment:
-      ADEMPIERE_DB_SERVER: ${POSTGRES_NAME} #adempiere.db
+      ADEMPIERE_DB_SERVER: ${POSTGRES_CONTAINER_NAME} #adempiere.db
     depends_on:
       adempiere.db:
         condition: service_healthy
@@ -47,7 +47,7 @@ services:
 
   adempiere-site:
     image: ${ADEMPIERE_SITE_IMAGE}
-    container_name: ${ADEMPIERE_SITE}
+    container_name: ${ADEMPIERE_SITE_CONTAINER_NAME}
     hostname: ${ADEMPIERE_SITE_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
@@ -56,8 +56,8 @@ services:
       - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
       - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
     environment:
-      ZK_HOST: ${ZK_HOST}:${ADEMPIERE_ZK_PORT}
-      VUE_HOST: ${VUE_HOST}:${VUE_UI_PORT}
+      ZK_HOST: ${ADEMPIERE_SITE_ZK_URL}:${ADEMPIERE_ZK_PORT}
+      VUE_HOST: ${ADEMPIERE_SITE_VUE_URL}:${VUE_UI_PORT}
     depends_on:
       - adempiere-zk
     networks:
@@ -65,8 +65,8 @@ services:
       
   adempiere-middleware:
     image: ${ADEMPIERE_MIDDLEWARE_IMAGE}
-    container_name: ${MIDDLEWARE_HOST}
-    hostname: ${MIDDLEWARE_HOSTNAME}
+    container_name: ${ADEMPIERE_MIDDLEWARE_CONTAINER_NAME}
+    hostname: ${ADEMPIERE_MIDDLEWARE_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
       - 50059
@@ -80,8 +80,8 @@ services:
       start_period: 20s
       timeout: 10s
     environment:
-      DB_HOST: ${POSTGRES_NAME}
-      SERVER_PRIVATE_KEY: ${SERVER_PRIVATE_KEY}
+      DB_HOST: ${POSTGRES_CONTAINER_NAME}
+      SERVER_PRIVATE_KEY: ${ADEMPIERE_MIDDLEWARE_SERVER_PRIVATE_KEY}
     depends_on:
       adempiere.db:
         condition: service_healthy
@@ -90,7 +90,7 @@ services:
       
   adempiere-backend-rs:
     image: ${ADEMPIERE_BACKEND_RS_IMAGE}
-    container_name: ${ADEMPIERE_BACKEND_RS_HOST}
+    container_name: ${ADEMPIERE_BACKEND_RS_CONTAINER_NAME}
     hostname: ${ADEMPIERE_BACKEND_RS_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
@@ -99,7 +99,7 @@ services:
       - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
       - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
     environment:
-      MIDDLEWARE_HOST: http://${MIDDLEWARE_HOST}:50059
+      MIDDLEWARE_HOST: http://${ADEMPIERE_MIDDLEWARE_CONTAINER_NAME}:50059
     depends_on:
       adempiere-middleware:
         condition: service_healthy
@@ -108,7 +108,7 @@ services:
   
   adempiere-scheduler:
     image: ${ADEMPIERE_SCHEDULER_IMAGE}
-    container_name: ${ADEMPIERE_SCHEDULER_HOST}
+    container_name: ${ADEMPIERE_SCHEDULER_CONTAINER_NAME}
     restart: ${GENERIC_RESTART}
     ports:
       - ${ADEMPIERE_SCHEDULER_PORT}:8080
@@ -117,12 +117,15 @@ services:
       - "--bootstrap-expect=1"
       - "--node-name=node1"
       - "--server"
+      - "--ui=false"
+    volumes:
+      - volume_scheduler:/dkron.data
     networks:
       - adempiere_network
       
   adempiere-grpc-server:
-    image: ${ADEMPIERE_GRPC_SERVER_IMAGE}
-    container_name: ${VUE_BACKEND_HOST}
+    image: ${VUE_BACKEND_ADEMPIERE_GRPC_SERVER_IMAGE}
+    container_name: ${VUE_BACKEND_CONTAINER_NAME}
     hostname: ${VUE_BACKEND_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
@@ -137,9 +140,10 @@ services:
       start_period: 20s
       timeout: 10s
     environment:
-      DB_HOST: ${POSTGRES_NAME}
-      SECRET_KEY: ${SECRET_KEY}
-      SERVICES_ENABLED: ${SERVICES_ENABLED}
+      DB_HOST: ${POSTGRES_CONTAINER_NAME}
+      SECRET_KEY: ${VUE_BACKEND_SECRET_KEY}
+      SERVICES_ENABLED: ${VUE_BACKEND_SERVICES_ENABLED}
+      SERVER_LOG_LEVEL: ${VUE_BACKEND_LOG_LEVEL}
     depends_on:
       adempiere.db:
         condition: service_healthy
@@ -148,7 +152,7 @@ services:
 
   vue-api:
     image: ${VUE_API_IMAGE}
-    container_name: ${VUE_API_HOST}
+    container_name: ${VUE_API_CONTAINER_NAME}
     hostname: ${VUE_API_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
@@ -163,17 +167,17 @@ services:
       start_period: 20s
       timeout: 10s
     environment:
-      ES_HOST: ${ES_HOST}
-      ES_PORT: ${ES_PORT}
-      AD_ACCESSHOST: ${VUE_BACKEND_HOST}
-      AD_STORE_ACCESS_HOST: ${VUE_BACKEND_HOST}
-      AD_BUSINESSHOST: ${VUE_BACKEND_HOST}
-      AD_DICTIONARYHOST: ${VUE_BACKEND_HOST}
-      AD_ACCESSAPIHOST: ${VUE_BACKEND_HOST}
-      AD_STORE_HOST: ${VUE_BACKEND_HOST}
-      AD_DEFAULT_HOST: ${VUE_BACKEND_HOST}
-      VS_ENV: ${VS_ENV}
-      INDEX: ${INDEX}
+      ES_HOST: ${VUE_API_ES_HOST}
+      ES_PORT: ${VUE_API_ES_PORT}
+      AD_ACCESSHOST: ${VUE_BACKEND_CONTAINER_NAME}
+      AD_STORE_ACCESS_HOST: ${VUE_BACKEND_CONTAINER_NAME}
+      AD_BUSINESSHOST: ${VUE_BACKEND_CONTAINER_NAME}
+      AD_DICTIONARYHOST: ${VUE_BACKEND_CONTAINER_NAME}
+      AD_ACCESSAPIHOST: ${VUE_BACKEND_CONTAINER_NAME}
+      AD_STORE_HOST: ${VUE_BACKEND_CONTAINER_NAME}
+      AD_DEFAULT_HOST: ${VUE_BACKEND_CONTAINER_NAME}
+      VS_ENV: ${VUE_API_VS_ENV}
+      INDEX: ${VUE_API_INDEX}
     depends_on:
       adempiere-grpc-server:
         condition: service_healthy
@@ -182,7 +186,7 @@ services:
       
   vue-ui:
     image: ${VUE_UI_IMAGE}
-    container_name: ${VUE_UI_HOST}
+    container_name: ${VUE_UI_CONTAINER_NAME}
     hostname: ${VUE_UI_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
@@ -192,6 +196,7 @@ services:
       - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
     environment:
       API_URL: http://${VUE_UI_URL}:${VUE_API_PORT}
+      TASK_MANAGER_URL: ${VUE_UI_TASK_MANAGER_URL}
     networks:
       - adempiere_network
       
@@ -219,4 +224,7 @@ volumes:
       type: none
       o: bind
       device: ${PWD}/postgresql/backups # Must be created before calling docker compose. Backups must be copied here to be restored.
+  volume_scheduler:
+    name: ${ADEMPIERE_SCHEDULER_VOLUME}
+    
       
