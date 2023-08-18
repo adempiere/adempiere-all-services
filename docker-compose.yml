@@ -33,7 +33,7 @@ services:
     hostname: ${ADEMPIERE_ZK_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
-      - ${ADEMPIERE_ZK_PORT}:8080
+      - ${ADEMPIERE_ZK_EXTERNAL_PORT}:${ADEMPIERE_ZK_PORT}
     volumes:
       - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
       - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
@@ -51,13 +51,13 @@ services:
     hostname: ${ADEMPIERE_SITE_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
-      - ${ADEMPIERE_SITE_PORT}:80
+      - ${ADEMPIERE_SITE_EXTERNAL_PORT}:${ADEMPIERE_SITE_PORT}
     volumes:
       - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
       - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
     environment:
-      ZK_HOST: ${ADEMPIERE_SITE_ZK_URL}:${ADEMPIERE_ZK_PORT}
-      VUE_HOST: ${ADEMPIERE_SITE_VUE_URL}:${VUE_UI_PORT}
+      ZK_HOST: ${ADEMPIERE_SITE_ZK_URL}:${ADEMPIERE_ZK_EXTERNAL_PORT}
+      VUE_HOST: ${ADEMPIERE_SITE_VUE_URL}:${VUE_UI_EXTERNAL_PORT}
     depends_on:
       - adempiere-zk
     networks:
@@ -69,7 +69,7 @@ services:
     hostname: ${ADEMPIERE_MIDDLEWARE_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
-      - 50059
+      - ${ADEMPIERE_MIDDLEWARE_PORT}
     volumes:
       - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
       - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
@@ -94,12 +94,12 @@ services:
     hostname: ${ADEMPIERE_BACKEND_RS_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
-      - 8889:7878
+      - ${ADEMPIERE_BACKEND_RS_EXTERNAL_PORT}:${ADEMPIERE_BACKEND_RS_PORT}
     volumes:
       - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
       - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
     environment:
-      MIDDLEWARE_HOST: http://${ADEMPIERE_MIDDLEWARE_CONTAINER_NAME}:50059
+      MIDDLEWARE_HOST: http://${ADEMPIERE_MIDDLEWARE_CONTAINER_NAME}:${ADEMPIERE_MIDDLEWARE_PORT}
     depends_on:
       adempiere-middleware:
         condition: service_healthy
@@ -111,7 +111,7 @@ services:
     container_name: ${ADEMPIERE_SCHEDULER_CONTAINER_NAME}
     restart: ${GENERIC_RESTART}
     ports:
-      - ${ADEMPIERE_SCHEDULER_PORT}:8080
+      - ${ADEMPIERE_SCHEDULER_EXTERNAL_PORT}:${ADEMPIERE_SCHEDULER_PORT}
     command:
       - "agent"
       - "--bootstrap-expect=1"
@@ -129,7 +129,7 @@ services:
     hostname: ${VUE_BACKEND_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
-      - 50059
+      - ${VUE_BACKEND_PORT}
     volumes:
       - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
       - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
@@ -156,7 +156,7 @@ services:
     hostname: ${VUE_API_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
-      - ${VUE_API_PORT}:8085
+      - ${VUE_API_EXTERNAL_PORT}:${VUE_API_PORT}
     volumes:
       - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
       - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
@@ -190,12 +190,12 @@ services:
     hostname: ${VUE_UI_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
-      - ${VUE_UI_PORT}:80
+      - ${VUE_UI_EXTERNAL_PORT}:${VUE_UI_PORT}
     volumes:
       - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
       - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
     environment:
-      API_URL: http://${VUE_UI_URL}:${VUE_API_PORT}
+      API_URL: http://${VUE_UI_URL}:${VUE_API_EXTERNAL_PORT}
       TASK_MANAGER_URL: ${VUE_UI_TASK_MANAGER_URL}
     networks:
       - adempiere_network
