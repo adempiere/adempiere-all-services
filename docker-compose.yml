@@ -12,10 +12,10 @@ services:
     ports:
       - ${POSTGRES_EXTERNAL_PORT}:${POSTGRES_PORT}          # Set a fixed external port
     volumes:
-      - volume_postgres:/var/lib/postgresql/data            # Database dir for container. Default for Postgres.
+      - volume_postgres:${POSTGRES_DEFAULT_DB_PATH}         # Database dir for container. Default for Postgres.
       - volume_backups:/home/westfalia/backups              # Backup dir for container. It will be created with Dockerfile
-      - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
-      - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
+      - ${TIMEZONE_PATH_ON_HOST}:${TIMEZONE_PATH_ON_CONTAINER}:${TIMEZONE_OPTIONS}    # Map the Timezone  of the host to the Timezone of the container
+      - ${LOCALTIME_PATH_ON_HOST}:${LOCALTIME_PATH_ON_CONTAINER}:${LOCALTIME_OPTIONS} # Map the Localtime of the host to the Timezone of the container
     healthcheck:
       test: "bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/127.0.0.1/5432; exit $?;'"
       interval: 10s
@@ -35,8 +35,8 @@ services:
     ports:
       - ${ADEMPIERE_ZK_EXTERNAL_PORT}:${ADEMPIERE_ZK_PORT}
     volumes:
-      - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
-      - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
+      - ${TIMEZONE_PATH_ON_HOST}:${TIMEZONE_PATH_ON_CONTAINER}:${TIMEZONE_OPTIONS}    # Map the Timezone  of the host to the Timezone of the container
+      - ${LOCALTIME_PATH_ON_HOST}:${LOCALTIME_PATH_ON_CONTAINER}:${LOCALTIME_OPTIONS} # Map the Localtime of the host to the Timezone of the container
     environment:
       ADEMPIERE_DB_SERVER: ${POSTGRES_CONTAINER_NAME} #adempiere.db
     depends_on:
@@ -53,8 +53,8 @@ services:
     ports:
       - ${ADEMPIERE_SITE_EXTERNAL_PORT}:${ADEMPIERE_SITE_PORT}
     volumes:
-      - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
-      - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
+      - ${TIMEZONE_PATH_ON_HOST}:${TIMEZONE_PATH_ON_CONTAINER}:${TIMEZONE_OPTIONS}    # Map the Timezone  of the host to the Timezone of the container
+      - ${LOCALTIME_PATH_ON_HOST}:${LOCALTIME_PATH_ON_CONTAINER}:${LOCALTIME_OPTIONS} # Map the Localtime of the host to the Timezone of the container
     environment:
       ZK_HOST: ${ADEMPIERE_SITE_ZK_URL}:${ADEMPIERE_ZK_EXTERNAL_PORT}
       VUE_HOST: ${ADEMPIERE_SITE_VUE_URL}:${VUE_UI_EXTERNAL_PORT}
@@ -71,8 +71,8 @@ services:
     ports:
       - ${ADEMPIERE_MIDDLEWARE_PORT}
     volumes:
-      - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
-      - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
+      - ${TIMEZONE_PATH_ON_HOST}:${TIMEZONE_PATH_ON_CONTAINER}:${TIMEZONE_OPTIONS}    # Map the Timezone  of the host to the Timezone of the container
+      - ${LOCALTIME_PATH_ON_HOST}:${LOCALTIME_PATH_ON_CONTAINER}:${LOCALTIME_OPTIONS} # Map the Localtime of the host to the Timezone of the container
     healthcheck:
       test: "bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/127.0.0.1/50059; exit $?;'"
       interval: 10s
@@ -96,8 +96,8 @@ services:
     ports:
       - ${ADEMPIERE_BACKEND_RS_EXTERNAL_PORT}:${ADEMPIERE_BACKEND_RS_PORT}
     volumes:
-      - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
-      - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
+      - ${TIMEZONE_PATH_ON_HOST}:${TIMEZONE_PATH_ON_CONTAINER}:${TIMEZONE_OPTIONS}    # Map the Timezone  of the host to the Timezone of the container
+      - ${LOCALTIME_PATH_ON_HOST}:${LOCALTIME_PATH_ON_CONTAINER}:${LOCALTIME_OPTIONS} # Map the Localtime of the host to the Timezone of the container
     environment:
       MIDDLEWARE_HOST: http://${ADEMPIERE_MIDDLEWARE_CONTAINER_NAME}:${ADEMPIERE_MIDDLEWARE_PORT}
     depends_on:
@@ -120,6 +120,8 @@ services:
       - "--ui=false"
     volumes:
       - volume_scheduler:/dkron.data
+      - ${TIMEZONE_PATH_ON_HOST}:${TIMEZONE_PATH_ON_CONTAINER}:${TIMEZONE_OPTIONS}    # Map the Timezone  of the host to the Timezone of the container
+      - ${LOCALTIME_PATH_ON_HOST}:${LOCALTIME_PATH_ON_CONTAINER}:${LOCALTIME_OPTIONS} # Map the Localtime of the host to the Timezone of the container
     networks:
       - adempiere_network
       
@@ -131,8 +133,8 @@ services:
     ports:
       - ${VUE_BACKEND_PORT}
     volumes:
-      - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
-      - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
+      - ${TIMEZONE_PATH_ON_HOST}:${TIMEZONE_PATH_ON_CONTAINER}:${TIMEZONE_OPTIONS}    # Map the Timezone  of the host to the Timezone of the container
+      - ${LOCALTIME_PATH_ON_HOST}:${LOCALTIME_PATH_ON_CONTAINER}:${LOCALTIME_OPTIONS} # Map the Localtime of the host to the Timezone of the container
     healthcheck:
       test: "bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/127.0.0.1/50059; exit $?;'"
       interval: 10s
@@ -158,8 +160,8 @@ services:
     ports:
       - ${VUE_API_EXTERNAL_PORT}:${VUE_API_PORT}
     volumes:
-      - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
-      - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
+      - ${TIMEZONE_PATH_ON_HOST}:${TIMEZONE_PATH_ON_CONTAINER}:${TIMEZONE_OPTIONS}    # Map the Timezone  of the host to the Timezone of the container
+      - ${LOCALTIME_PATH_ON_HOST}:${LOCALTIME_PATH_ON_CONTAINER}:${LOCALTIME_OPTIONS} # Map the Localtime of the host to the Timezone of the container
     healthcheck:
       test: "bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/$(hostname)/8085; exit $?;'"
       interval: 10s
@@ -192,11 +194,11 @@ services:
     ports:
       - ${VUE_UI_EXTERNAL_PORT}:${VUE_UI_PORT}
     volumes:
-      - /etc/timezone:/etc/timezone:ro                      # Map the Timezone of the host to the Timezone of the container
-      - /etc/localtime:/etc/localtime:ro                    # Map the Timezone of the host to the Timezone of the container
+      - ${TIMEZONE_PATH_ON_HOST}:${TIMEZONE_PATH_ON_CONTAINER}:${TIMEZONE_OPTIONS}    # Map the Timezone  of the host to the Timezone of the container
+      - ${LOCALTIME_PATH_ON_HOST}:${LOCALTIME_PATH_ON_CONTAINER}:${LOCALTIME_OPTIONS} # Map the Localtime of the host to the Timezone of the container
     environment:
-      API_URL: http://${VUE_UI_URL}:${VUE_API_EXTERNAL_PORT}
-      TASK_MANAGER_URL: ${VUE_UI_TASK_MANAGER_URL}
+      API_URL: ${VUE_UI_URL}:${VUE_API_EXTERNAL_PORT}
+      TASK_MANAGER_URL: ${VUE_UI_TASK_MANAGER_URL}:${VUE_UI_TASK_MANAGER_PORT}
     networks:
       - adempiere_network
       
