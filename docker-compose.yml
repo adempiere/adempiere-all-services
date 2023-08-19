@@ -3,8 +3,8 @@ version: "3.9"
 services:
   adempiere.db:
     build:
-      context: postgresql/
-      dockerfile: Dockerfile
+      context: ${POSTGRES_CONTEXT_PATH_ON_HOST}              # Path relative to WD where Dockerfile will be found
+      dockerfile: ${DOCKERFILE_NAME}                         # Must exist in context. Otherwise, error
     container_name: ${POSTGRES_CONTAINER_NAME}
     hostname: ${POSTGRES_HOSTNAME}
     image: ${POSTGRES_IMAGE}
@@ -12,8 +12,8 @@ services:
     ports:
       - ${POSTGRES_EXTERNAL_PORT}:${POSTGRES_PORT}          # Set a fixed external port
     volumes:
-      - volume_postgres:${POSTGRES_DEFAULT_DB_PATH}         # Database dir for container. Default for Postgres.
-      - volume_backups:/home/westfalia/backups              # Backup dir for container. It will be created with Dockerfile
+      - volume_postgres:${POSTGRES_DEFAULT_DB_PATH_ON_CONTAINER} # Database dir for container. Default for Postgres.
+      - volume_backups:${POSTGRES_DB_BACKUP_PATH_ON_CONTAINER}   # Backup dir for container. Must be created with Dockerfile
       - ${TIMEZONE_PATH_ON_HOST}:${TIMEZONE_PATH_ON_CONTAINER}:${TIMEZONE_OPTIONS}    # Map the Timezone  of the host to the Timezone of the container
       - ${LOCALTIME_PATH_ON_HOST}:${LOCALTIME_PATH_ON_CONTAINER}:${LOCALTIME_OPTIONS} # Map the Localtime of the host to the Timezone of the container
     healthcheck:
@@ -209,9 +209,9 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 192.168.100.0/24      # Set subnet for all containers created.
-          gateway: 192.168.100.1
-          # ip-range: 192.168.10.0/24   # supposedly not allowed
+        - subnet: ${NETWORK_SUBNET}      # Set subnet for all containers created.
+          gateway: ${NETWORK_GATEWAY}
+          # ip-range: ${NETWORK_IP_RANGE}   # supposedly not allowed
 
 volumes:
   volume_postgres:
@@ -219,13 +219,13 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: ${PWD}/postgresql/postgres_database # Must be created before calling docker compose. The database will be located locally here.
+      device: ${POSTGRES_DB_PATH_ON_HOST} # Must be created on host before calling docker compose. The persistent database will be located locally here.
   volume_backups:
     name: ${BACKUPS_VOLUME}
     driver_opts:
       type: none
       o: bind
-      device: ${PWD}/postgresql/backups # Must be created before calling docker compose. Backups must be copied here to be restored.
+      device: ${POSTGRES_BACKUP_PATH_ON_HOST} # Must be created on host before calling docker compose. Backups must be copied here to be restored.
   volume_scheduler:
     name: ${ADEMPIERE_SCHEDULER_VOLUME}
     

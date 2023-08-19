@@ -14,6 +14,8 @@ LOCALTIME_PATH_ON_HOST="/etc/localtime"
 LOCALTIME_PATH_ON_CONTAINER="/etc/localtime"
 LOCALTIME_OPTIONS="ro"
 
+DOCKERFILE_NAME=Dockerfile
+
 # Main Frontend
 ADEMPIERE_SITE_IMAGE="openls/adempiere-landing-page:1.0.1"
 ADEMPIERE_SITE_CONTAINER_NAME="adempiere-saprod.adempiere.site"
@@ -30,7 +32,11 @@ POSTGRES_HOSTNAME="pg-server-container"
 POSTGRES_PASSWORD="adempiere"
 POSTGRES_PORT="5432"
 POSTGRES_EXTERNAL_PORT="55432"
-POSTGRES_DEFAULT_DB_PATH=/var/lib/postgresql/data
+POSTGRES_DEFAULT_DB_PATH_ON_CONTAINER=/var/lib/postgresql/data
+POSTGRES_DB_BACKUP_PATH_ON_CONTAINER=/home/adempiere/backups
+POSTGRES_CONTEXT_PATH_ON_HOST=${PWD}/postgresql
+POSTGRES_DB_PATH_ON_HOST=${POSTGRES_CONTEXT_PATH_ON_HOST}/postgres_database
+POSTGRES_BACKUP_PATH_ON_HOST=${POSTGRES_CONTEXT_PATH_ON_HOST}/backups
 
 # Adempiere ZK
 # Look for newest tag at https://hub.docker.com/r/marcalwestf/adempiere-zk-ui/tags
@@ -94,8 +100,11 @@ ADEMPIERE_SCHEDULER_EXTERNAL_PORT=8879
 ADEMPIERE_SCHEDULER_PORT=8080
 ADEMPIERE_SCHEDULER_VOLUME="adempiere-saprod.volume_scheduler"
 
-# Networks
+# Network
 ADEMPIERE_NETWORK="adempiere-saprod.adempiere_network"
+NETWORK_SUBNET=192.168.100.0/24
+NETWORK_GATEWAY=192.168.100.1
+NETWORK_IP_RANGE=192.168.10.0/24
 
 # Volumes
 POSTGRES_VOLUME="adempiere-saprod.volume_postgres"
