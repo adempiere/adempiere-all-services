@@ -124,7 +124,8 @@ mkdir postgresql/backups
 cp <PATH-TO-BACKUP-FILE> postgresql/backups
 ```
 ##### Modify env_template as needed
-The only variables actually needed to change are *COMPOSE_PROJECT_NAME* (to the name you want to give the project, e.g. the name of your client) and *HOST_IP* (to the IP your host has).
+The only variables actually needed to change are *COMPOSE_PROJECT_NAME* (to the name you want to give the project, e.g. the name of your client) and *HOST_IP* (to the IP your host has):
+
 ![ADempiere Template](docs/ADempiere_All_Services_env_template.png)
 
 Other values in *env_template* are default values. 
@@ -193,72 +194,109 @@ Execute command:
 ./stop-and-delete-all.sh
 ```
 
-### Access to Database
-Connect via port **55432** with a DB connector, e.g. PGAdmin.
+### Database Access
+Connect to database via port **55432** with a DB connector, e.g. PGAdmin.
 Or to the port the variable *POSTGRES_EXTERNAL_PORT* points in file *env_template*.
 
 ## Useful Commands
 ### Container Management
-##### Shut down all containers
+##### Shut Down All Containers
   The database will be preserved.
   All docker images, networks, and volumes will be preserved.
 ```Shell
 docker compose down
 ```
-##### Stop and delete one service (services defined in *docker-compose.yml*)
+##### Stop aAd Delete One Service (services defined in *docker-compose.yml*)
 ```Shell
 docker compose rm -s -f <service name>
 docker compose rm -s -f adempiere.db
 docker compose rm -s -f adempiere-zk
 etc.
 ```
-##### Stop and delete all services
+##### Stop And Delete All Services
 ```Shell
 docker compose rm -s -f
 ```
-##### Create and restart all services
+##### Create And Restart All Services
 ```Shell
 docker compose up -d
 ```
-##### Stop one single service
+##### Stop One Single Service
 ```Shell
 docker compose stop <service name>
 docker compose stop adempiere-site
 etc.
 ```
-##### Start one single service (after it was stopped)
+##### Start One Single Service (after it was stopped)
 ```Shell
 docker compose start <service name>
 docker compose start adempiere-site
 etc.
 ```
-##### Start and stop one single service
+##### Start And Stop One Single Service
 ```Shell
 docker compose restart <service name>
 docker compose restart adempiere-site
 etc.
 ```
-##### Find containers and services
+##### Find Containers And Services
 ```Shell
 docker compose ps -a
 ```
 
 ### Misc Commands
-##### Display all docker images
+##### Display All Docker Images
 ```Shell
 docker images -a
 ```
 
-##### Display all docker containers
+##### Display All Docker Containers
 ```Shell
 docker ps -a
 docker ps -a --format "{{.ID}}: {{.Names}}"
 ```
 
-##### Physically delete database via Docker notation from the host.
-  Be careful with these commands, once done, there is no way to undo it!
-  Smetimes it is needed to delete all files that comprises the database.
-  The database directory must be empty for the restore to work.
+##### Debug I: Display Values To Be Used In Application
+Renders the actual data model to be applied on the Docker engine by merging *env_template* and *docker-compose.yml*.
+If you have modified *env_template*, make sure to copy it to *.env*.
+```Shell
+cp env_template .env
+docker compose convert
+
+```
+
+##### Debug II: Display Container Logs
+```Shell
+docker container logs <CONTAINER>                         -->> variable defined in *env_template*
+docker container logs <CONTAINER> | less                  -->> variable defined in *env_template*
+docker container logs adempiere-all.postgres
+docker container logs adempiere-all.postgres | less
+
+```
+
+##### Debug III: Display Container Values
+Display the values a container is working with.
+```Shell
+docker container inspect <CONTAINER>
+docker container inspect adempiere-all.postgres
+docker container inspect adempiere-all.zk
+etc.
+
+```
+
+##### Debug IV: Log Into Container
+```Shell
+docker container exec -it <CONTAINER> <COMMAND>                
+docker container exec -it adempiere-all.postgres bash
+etc.
+
+```
+
+##### Delete Database On Host I (Using Docker File System)
+Physically delete database from the host via Docker elements.
+Sometimes it is needed to delete all files that comprises the database.
+Be careful with these commands, once done, there is no way to undo it!
+The database directory must be empty for the restore to work.
 ```Shell
 sudo ls -al /var/lib/docker/volumes/<POSTGRES_VOLUME>              -->> variable defined in *env_template*
 sudo ls -al /var/lib/docker/volumes/adempiere-all.volume_postgres  -->> default value
@@ -267,10 +305,11 @@ sudo rm -rf /var/lib/docker/volumes/<POSTGRES_VOLUME>/_data
 sudo rm -rf /var/lib/docker/volumes/adempiere-all.volume_postgres/_data
 ```
 
-##### Physically delete database via mounted volumes from the host.
-  Be careful with these commands, once done, there is no way to undo it!
-  Smetimes it is needed to delete all files that comprises the database.
-  The database directory must be empty for the restore to work.
+##### Delete Databse On Host II (using mounted volume on host)
+Physically delete database from the host via mounted volumes.
+Sometimes it is needed to delete all files that comprises the database.
+Be careful with these commands, once done, there is no way to undo it!
+The database directory must be empty for the restore to work.
 ```Shell
 sudo ls -al <POSTGRES_DB_PATH_ON_HOST>                         -->> variable defined in *env_template*
 sudo ls -al <PATH TO REPOSITORY>/postgresql/postgres_database  -->> default value
@@ -278,22 +317,3 @@ sudo ls -al <PATH TO REPOSITORY>/postgresql/postgres_database  -->> default valu
 sudo rm -rf <POSTGRES_DB_PATH_ON_HOST>
 sudo rm -rf <PATH TO REPOSITORY>/postgresql/postgres_database
 ```
-
-
-##### Debug: display logs of a container
-```Shell
-docker container logs <CONTAINER>                         -->> variable defined in *env_template*
-docker container logs <CONTAINER> | less                  -->> variable defined in *env_template*
-docker container logs adempiere-all.postgres.database
-docker container logs adempiere-all.postgres.database | less
-
-```
-
-##### Log into a container
-```Shell
-docker container exec -it <CONTAINER> <COMMAND>                
-docker container exec -it adempiere-all.postgres.database bash
-etc.
-
-```
-
