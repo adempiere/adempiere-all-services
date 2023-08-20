@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Directory needed for storing the persistent Postgres database.
+# Directory needed for storing persistently Postgres database.
 # Directory will be created only if inexistent.
 DBFILE=postgresql/postgres_database
 if [ ! -d "$DBFILE" ]; then
