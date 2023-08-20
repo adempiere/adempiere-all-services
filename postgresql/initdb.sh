@@ -12,7 +12,7 @@ then
     echo "Restore of database adempiere starting..."
     #psql -U adempiere -d adempiere < Adempiere/data/Adempiere_pg.dmp
     #pg_restore -U adempiere -d adempiere < /tmp/seed.backup -v  # In case Backup was created with pg_dump
-    psql -U adempiere -d adempiere < /home/westfalia/backups/seed.backup  # In case Backup was created with  RUN_DBExport
+    psql -U adempiere -d adempiere < /home/adempiere/backups/seed.backup  # In case Backup was created with  RUN_DBExport
     echo "Restore of database adempiere finished"
 else
     echo "Database adempiere does already exists; it will not be created"
