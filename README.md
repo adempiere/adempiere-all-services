@@ -28,7 +28,7 @@ Beware that the ports are defined in file *env_template*.
   From which all applications can be called
 - An ADempiere ZK UI accesible via port **8888**
 - An ADempiere Vue UI accesible via port **8891**
-- A Postgres databasee accesible via port **55432**
+- A Postgres databasee accesible e.g. by PGAdmin via port **55432**
 
 ### Application Stack
 The application stack consists of the following services defined in *docker-compose.yml*, which eventually will be run as containers:
@@ -42,14 +42,14 @@ The application stack consists of the following services defined in *docker-comp
 - *vue-api*: proxy
 - *vue-ui*: defines ADempiere Vue UI
 
-Additional objects defined in *docker-compose.yml*
+Additional objects defined in *docker-compose.yml*:
 - *adempiere_network*: defines the subnet used in the involved Docker containers (e.g. **192.168.100.0/24**)
 - *volume_postgres*: defines the mounting point of the Postgres database (typically directory **/var/lib/postgresql/data**) to a local directory on the host where the Docker container runs.
 - *volume_backups*: defines the mounting point of a backup directory on the Docker container to a local directrory on the host where the Docker container runs.
 - *volume_scheduler*: defines the mounting point for the scheduler
 
 ### Architecture
-The application stack as graphic
+The application stack as graphic:
 ![ADempiere Architecture](docs/ADempiere_All_Services_Architecture.png)
 
 ### File Structure
@@ -76,19 +76,19 @@ Make sure to install the following:
 - Git
 
 ##### 2 Check versions
-2.1 Check `java version`:
+2.1 Check `java version`
 ```Shell
 java --version
     openjdk 11.0.11 2021-04-20
     OpenJDK Runtime Environment AdoptOpenJDK-11.0.11+9 (build 11.0.11+9)
     OpenJDK 64-Bit Server VM AdoptOpenJDK-11.0.11+9 (build 11.0.11+9, mixed mode
 ```
-2.2 Check `docker version`:
+2.2 Check `docker version`
 ```Shell
 docker --version
     Docker version 23.0.3, build 3e7cbfd
 ```
-2.3 Check `docker compose version`:
+2.3 Check `docker compose version`
 ```Shell
 docker compose version
     Docker Compose version v2.17.2
@@ -98,7 +98,7 @@ docker compose version
 git clone https://github.com/SusanneCalderon/adempiere-all-services
 cd adempiere-all-services
 ```
-### Use correct branch
+### Make sure to use correct branch
 ```Shell
 git checkout feature/shw/local-seed/master
 ```
@@ -115,7 +115,8 @@ mkdir postgresql/postgres_database
 mkdir postgresql/backups
 ```
 ##### Copy backup file (if restore is needed)
-- If you are executing this project for the first time or you want to restore the database, execute a database backup e.g.: `pg_dump -v --no-owner -h localhost -U postgres <DB-NAME> > adempiere-$(date '+%Y-%m-%d').backup`. 
+- If you are executing this project for the first time or you want to restore the database, execute a database backup e.g.: 
+`pg_dump -v --no-owner -h localhost -U postgres <DB-NAME> > adempiere-$(date '+%Y-%m-%d').backup`. 
 - The file must be named `seed.backup` or as it was defined in *postgresql/initdb.sh*. Then, copy or move it to `adempiere-all-service/postgresql/backups`. 
 - Make sure it is not the compressed backup (e.g. .jar).
 - The database directory `adempiere-all-service/postgresql/postgres_database` must be empty for the restore to ocurr. The backup will not ocurr if the database directory has contents.
@@ -124,11 +125,11 @@ cp <PATH-TO-BACKUP-FILE> postgresql/backups
 ```
 ##### Modify env_template as needed
 The only variables actually needed to change are *COMPOSE_PROJECT_NAME* (to the name you want to give the project, e.g. the name of your client) and *HOST_IP* (to the IP your host has).
-
-Other values in *env_template* are default values. Feel free to change them accordingly to your wishes/purposes.
-There should be no need to change file *docker-compose.yml*.
-
 ![ADempiere Template](docs/ADempiere_All_Services_env_template.png)
+
+Other values in *env_template* are default values. 
+Feel free to change them accordingly to your wishes/purposes.
+There should be no need to change file *docker-compose.yml*.
 ##### Copy env_template if it was modified
 Once you modified *env_template* as needed, copy it to *.env*. This is not needed if you run *start-all.sh*. 
 ```Shell
@@ -178,7 +179,7 @@ This might take some time, depending on your bandwith and the size of the restor
 - Open separately Adempiere Vue:open browser and type in the following url [http://localhost:8891/#/login?redirect=%2Fdashboard](http://localhost:8891/#/login?redirect=%2Fdashboard)
 
 ### Delete All Docker Objects
-Sometimes, you need to undo everything and start anew.
+Sometimes, due to different reasons, you need to undo everything and start anew.
 
 Then, 
 - All Docker containers must be shut down.
@@ -193,8 +194,8 @@ Execute command:
 ```
 
 ### Access to Database
-Connect via port **55432** with a DB connector.
-Or to the port the variable *POSTGRES_EXTERNAL_PORT* point in file *env_template*.
+Connect via port **55432** with a DB connector, e.g. PGAdmin.
+Or to the port the variable *POSTGRES_EXTERNAL_PORT* points in file *env_template*.
 
 ## Useful Commands
 ### Container Management
@@ -209,6 +210,7 @@ docker compose down
 docker compose rm -s -f <service name>
 docker compose rm -s -f adempiere.db
 docker compose rm -s -f adempiere-zk
+etc.
 ```
 ##### Stop and delete all services
 ```Shell
@@ -222,16 +224,19 @@ docker compose up -d
 ```Shell
 docker compose stop <service name>
 docker compose stop adempiere-site
+etc.
 ```
 ##### Start one single service (after it was stopped)
 ```Shell
 docker compose start <service name>
 docker compose start adempiere-site
+etc.
 ```
 ##### Start and stop one single service
 ```Shell
 docker compose restart <service name>
 docker compose restart adempiere-site
+etc.
 ```
 ##### Find containers and services
 ```Shell
@@ -266,11 +271,12 @@ sudo rm -rf /var/lib/docker/volumes/adempiere-all.volume_postgres/_data
   Be careful with these commands, once done, there is no way to undo it!
   Smetimes it is needed to delete all files that comprises the database.
   The database directory must be empty for the restore to work.
-        rm -rf /data2/entwicklung/westfaliaRepository_2022-06/adempiere-all-services/postgres_database/*
 ```Shell
 sudo ls -al <POSTGRES_DB_PATH_ON_HOST>                         -->> variable defined in *env_template*
 sudo ls -al <PATH TO REPOSITORY>/postgresql/postgres_database  -->> default value
+
 sudo rm -rf <POSTGRES_DB_PATH_ON_HOST>
+sudo rm -rf <PATH TO REPOSITORY>/postgresql/postgres_database
 ```
 
 
@@ -287,6 +293,7 @@ docker container logs adempiere-all.postgres.database | less
 ```Shell
 docker container exec -it <CONTAINER> <COMMAND>                
 docker container exec -it adempiere-all.postgres.database bash
+etc.
 
 ```
 
