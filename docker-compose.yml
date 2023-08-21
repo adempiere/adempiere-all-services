@@ -109,6 +109,7 @@ services:
   adempiere-scheduler:
     image: ${ADEMPIERE_SCHEDULER_IMAGE}
     container_name: ${ADEMPIERE_SCHEDULER_CONTAINER_NAME}
+    hostname: ${ADEMPIERE_SCHEDULER_HOSTNAME}
     restart: ${GENERIC_RESTART}
     ports:
       - ${ADEMPIERE_SCHEDULER_EXTERNAL_PORT}:${ADEMPIERE_SCHEDULER_PORT}
