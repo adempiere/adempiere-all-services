@@ -47,7 +47,6 @@ POSTGRES_RESTORE_FILE_NAME=seed.backup
 POSTGRES_DEFAULT_RESTORE_FILE=${POSTGRES_DB_BACKUP_PATH_ON_CONTAINER}/${POSTGRES_RESTORE_FILE_NAME}
 
 # Adempiere ZK
-# Look for newest tag at https://hub.docker.com/r/marcalwestf/adempiere-zk-ui/tags
 ADEMPIERE_ZK_IMAGE="openls/adempiere-zk-ui:jetty-1.0.5"
 ADEMPIERE_ZK_EXTERNAL_PORT=8888
 ADEMPIERE_ZK_PORT=8080
