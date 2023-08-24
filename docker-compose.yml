@@ -245,5 +245,3 @@ volumes:
       device: ${POSTGRES_BACKUP_PATH_ON_HOST} # Must be created on host before calling docker compose. Backups must be copied here to be restored.
   volume_scheduler:
     name: ${ADEMPIERE_SCHEDULER_VOLUME}
-    
-      
