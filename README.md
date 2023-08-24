@@ -47,7 +47,7 @@ The application stack consists of the following services defined in *docker-comp
 
 Additional objects defined in *docker-compose.yml*:
 - *adempiere_network*: defines the subnet used in the involved Docker containers (e.g. **192.168.100.0/24**)
-- *volume_postgres*: defines the mounting point of the Postgres database (typically directory **/var/lib/postgresql/data**) to a local directory on the host where the Docker container runs.
+- *volume_postgres*: defines the mounting point of the Postgres database on the Docker container (typically directory **/var/lib/postgresql/data**) to a local directory on the host where the Docker container runs.
 - *volume_backups*: defines the mounting point of a backup directory on the Docker container to a local directrory on the host where the Docker container runs.
 - *volume_scheduler*: defines the mounting point for the scheduler
 
@@ -80,11 +80,11 @@ The application stack as graphic:
   The name of the seed can be defined in *env_template*.
   The seed is a backup file created with psql.
   If there is a seed, but a database exists already, there will be no restore.
-  This directory is useful when creating a backup: it can be created here, without needing to transfer it from the container to the host.
+  This directory is also useful when creating a backup: it can be created here, without needing to transfer it from the container to the host.
 - *docs*: directory containing images and documents used in this README file.
 
 ## Next Functionality
-It can be executed concurrently for different customers databases using the same database server on the same host by just changing the project name and running anew. The only open issue is where Adempiere calls the database.
+In a further step, the application can be implemented in a way that it may concurrently be executed for different customers databases using the same database server on the same host by just changing the project name and running anew. The only open issue is where Adempiere calls the database.
 
 ## Installation
 ### Requirements
@@ -115,12 +115,12 @@ docker compose version
 ```
 ### Clone This Repository
 ```Shell
-git clone https://github.com/SusanneCalderon/adempiere-all-services
+git clone https://github.com/adempiere/adempiere-all-services
 cd adempiere-all-services
 ```
 ### Make sure to use correct branch
 ```Shell
-git checkout feature/shw/local-seed/master
+git checkout main
 ```
 
 ### Manual Execution
