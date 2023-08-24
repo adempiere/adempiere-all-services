@@ -7,13 +7,16 @@ When executed, the *docker compose* project eventually runs the services defined
 The running Docker containers comprise the application.
  
 Benefits of the application:
-- It can run on different environments just by changing the target (i.e. host) IP.
-- It can be run for different customers on the same host by just changing the project name and running anew.
-- The desired values are changed only at one single configuration file.
-- Single containers or images can be updated and/or replaced easily.
+- In its simplest form, it can be used as a demo of the latest ADempiere version.
+- No big installation hassle for getting it running: just execute a shell script.
+- It can run on different hosts just by changing the target IP to the one of the host.
+- Completly configurable: any value can be changed for the whole application at one single configuration file.
+- Single containers or images can be updated and/or replaced easily, making deployments and test speedy.
 - The timezone and location for all containers are the same as the hosts'.
 - Ideal for testing situations due to its ease of configuration and execution.
 - No need of deep knowledge of Docker, Images or Postgres.
+- Every container, image and object is unique, derived from a configuration file.
+- In future: It can be executed concurrently for different customers on the same host by just changing the project name and running anew.
 
 ## Example of Application Running
 ![ADempiere Vue](docs/ADempiere_All_Services_Vue.gif)
@@ -23,7 +26,7 @@ Benefits of the application:
 ## General Explanations
 ### User's perspective
 From a user's point of view, the application consists of the following.
-Beware that the ports are defined in file *env_template*.
+Take note that the ports are defined in file *env_template* as external ports and can be changed if needed or desired.
 - A home web site accesible via port **8080**
   From which all applications can be called
 - An ADempiere ZK UI accesible via port **8888**
@@ -54,16 +57,30 @@ The application stack as graphic:
 
 ### File Structure
 - *README.md*: this very file
-- *docker-compose.yml*: the docker compose definition file. Here are defined all services.
-  Variables used in this file are taken from file *.env*.
-- *.env*: definition of all variables used in *docker-compose.yml*.
 - *env_template*: template for definition of all variables. Usually, this file is edited and tested before copied to *.env*.
+- *.env*: definition of all variables used in *docker-compose.yml*.
+- *docker-compose.yml*: the docker compose definition file. Here all services are defined.
+  Variables used in this file are taken from file *.env*.
 - *start-all.sh*: shell script to automatically execute docker compose.
-- *stop-and-delete-all.sh*: shell script to delete all containers, images, networks and volumnes created with *start-all.sh*
+  The persistent directory (database) and the backup directory are created when needed, the file *env_template* is copied to *.env* and docker compose is started.
+- *stop-and-delete-all.sh*: shell script to delete all containers, images, networks, cache and volumnes created with *start-all.sh* or by executing *docker-compose.yml*.
+  After executing this shell, no trace of the application will be left over. Only the persistent directory will not be affected.
 - *postgresql/Dockerfile*: the Dockerfile used.
-- *postgresql/initdb.sh*: shell script executed when Postgres starts. It launches a restore database when there is no database and a backup exists.
-- *postgresql/postgres_database*: mounting point on the host for the Postgres container's database. This makes sure that the database is not deleted even if the docker containers, docker images and even docker are deleted.
-- *postgresql/backups*: the mounting point for the backups/restores from the Postgres container.
+  It mainly copies postgresql/initdb.sh to the container, so it can be executed at start.
+- *postgresql/initdb.sh*: shell script executed when Postgres starts. 
+  If there is a database named "adempiere", nothing happens.
+  If there is no database named "adempiere", the script checks if there is a database seed file in the backups directory. 
+  - If there is one, it launches a restore database.
+  - If there is none, the latest ADempiere seed is downloaded from Github and the restore is started with it.
+- *postgresql/postgres_database*: directory on host used as the mounting point on the host for the Postgres container's database. 
+  This makes sure that the database is not deleted even if the docker containers, docker images and even docker are deleted.
+  The database contents are kept always persistently on the host.
+- *postgresql/backups*: directory on host used as the mounting point for the backups/restores from the Postgres container.
+  Here the seed file for a potential restore can be copied. 
+  The name of the seed can be defined in *env_template*.
+  The seed is a backup file created with psql.
+  If there is a seed, but a database exists already, there will be no restore.
+  This directory is useful when creating a backup: it can be created here, without needing to transfer it from the container to the host.
 - *docs*: directory containing images and documents used in this README file.
 
 ## Installation
@@ -106,40 +123,48 @@ git checkout feature/shw/local-seed/master
 ### Manual Execution
 Alternative to **Automatic Execution**.
 Recommendable for the first installation.
-##### Create the directory on the host where the database will be mounted
+##### 1 Create the directory on the host where the database will be mounted
 ```Shell
 mkdir postgresql/postgres_database
 ```
-##### Create the directory on the host where the backups will be mounted
+##### 2 Create the directory on the host where the backups will be mounted
 ```Shell
 mkdir postgresql/backups
 ```
-##### Copy backup file (if restore is needed)
+##### 3 Copy backup file (if restore is needed)
 - If you are executing this project for the first time or you want to restore the database, execute a database backup e.g.: 
 `pg_dump -v --no-owner -h localhost -U postgres <DB-NAME> > adempiere-$(date '+%Y-%m-%d').backup`. 
-- The file must be named `seed.backup` or as it was defined in *postgresql/initdb.sh*. Then, copy or move it to `adempiere-all-service/postgresql/backups`. 
+- The file must be named `seed.backup` or as it was defined in *env_template*, variable *POSTGRES_RESTORE_FILE_NAME*. 
+  Then, copy or move it to `adempiere-all-service/postgresql/backups`. 
 - Make sure it is not the compressed backup (e.g. .jar).
-- The database directory `adempiere-all-service/postgresql/postgres_database` must be empty for the restore to ocurr. The backup will not ocurr if the database directory has contents.
+- The database directory `adempiere-all-service/postgresql/postgres_database` must be empty for the restore to ocurr. 
+  A backup will not ocurr if the database directory has contents.
 ```Shell
 cp <PATH-TO-BACKUP-FILE> postgresql/backups
 ```
-##### Modify env_template as needed
-The only variables actually needed to change are *COMPOSE_PROJECT_NAME* (to the name you want to give the project, e.g. the name of your client) and *HOST_IP* (to the IP your host has):
+##### 5 Modify env_template as needed
+The only variables actually needed to change are 
+- *COMPOSE_PROJECT_NAME* -> to the name you want to give the project, e.g. the name of your client).
+  From this name, all images and container names are derived.
+- *HOST_IP*  -> to to the IP your host has.
+- *POSTGRES_IMAGE* -> to the Postgres version you want to use.
+- *ADEMPIERE_GITHUB_VERSION* -> to the DB version needed.
+- *ADEMPIERE_GITHUB_COMPRESSED_FILE* -> to the DB version needed.
 
 ![ADempiere Template](docs/ADempiere_All_Services_env_template.png)
 
 Other values in *env_template* are default values. 
 Feel free to change them accordingly to your wishes/purposes.
 There should be no need to change file *docker-compose.yml*.
-##### Copy env_template if it was modified
+##### 6 Copy env_template if it was modified
 Once you modified *env_template* as needed, copy it to *.env*. This is not needed if you run *start-all.sh*. 
 ```Shell
 cp env_template .env
 ```
-##### File initdb.sh (optional)
-Modify `postgresql/initdb.sh` as necessary, depending on the backup file you are using. 
-A different restore command might be needed in *postgresql/initdb.sh* depending on the way the backup was done (*RUN_DBExport.sh* or *pg_dump*).
-##### Execute docker compose
+##### 7 File initdb.sh (optional)
+Modify `postgresql/initdb.sh` as necessary, depending on what you may want to do at database first start.
+You may create roles, schemas, etc.
+##### 8 Execute docker compose
 Run `docker compose`
 ```Shell
 docker compose up -d
@@ -150,8 +175,9 @@ docker compose up -d
 This might take some time, depending on your bandwith and the size of the restore file.
 ### Automatic Execution
 Alternative to **Manual Execution**.
-Recommendable when docker compose was run before.
+Recommendable when docker compose was run manually before.
 
+##### 1 Execute With One Script
 Execute script `start-all.sh`:
 ```Shell
 ./start-all.sh
@@ -159,30 +185,33 @@ Execute script `start-all.sh`:
 The script *start-all.sh* carries out the steps of the manual installation.
 If directories *postgresql/postgres_database* and *postgresql/backups* do not exist, they are created.
 
-If 
-- there is a file *seed.backup* in *postgresql/backups*, and 
-- the database as specified in *postgresql/initdb.sh* does not exist in Postgres, and
-- directory *postgresql/postgres_database* has no contents
-
-**The database  will be restored**.
-
-If directory *postgresql/postgres_database* has contents, no restore will be executed (actually, *postgresql/initdb.sh* will be ignored).
-
-
-**Result: all images are downloaded, containers and other docker objects created, containers are started, and -depending on conditions explained before- database restored**.
+##### 2 Result Of Script Execution
+All images are downloaded, containers and other docker objects created, containers are started, and -depending on conditions explained in the following section- database restored.
 
 This might take some time, depending on your bandwith and the size of the restore file.
+
+##### 3 Cases When Database Will Be Restored
+If 
+- there is a file *seed.backup* (or as defined in env_template, variable POSTGRES_RESTORE_FILE_NAME) in *postgresql/backups*, and 
+- the database as specified in *env_template*, variable *POSTGRES_DATABASE_NAME* does not exist in Postgres, and
+- directory *postgresql/postgres_database* has no contents
+
+The database  will be restored.
+
+##### 4 Cases When Database Will Not Be Restored
+The execution of *postgresql/initdb.sh* will be skipped if 
+- directory *postgresql/postgres_database* has contents, or 
+- in file *docker-compose.yml* there is a definition for *image*.
+  Here, the Dockerfile is ignored and thus also *docker-compose.yml*.
 ## Open Applications
 - Project site: open browser and type in the following url [http://localhost:8080](http://localhost:8080)
-
   From here, the user can navigate via buttons to ZK UI or Vue UI.
 - Open separately Adempiere ZK: open browser and type in the following url [http://localhost:8888/webui](http://localhost:8888/webui)
 - Open separately Adempiere Vue:open browser and type in the following url [http://localhost:8891/#/login?redirect=%2Fdashboard](http://localhost:8891/#/login?redirect=%2Fdashboard)
 
 ### Delete All Docker Objects
 Sometimes, due to different reasons, you need to undo everything and start anew.
-
-Then, 
+Then:All
 - All Docker containers must be shut down.
 - All Docker containers must be deleted.
 - All Docker images must be deleted.
