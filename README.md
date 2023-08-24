@@ -145,21 +145,21 @@ mkdir postgresql/backups
 ```Shell
 cp <PATH-TO-BACKUP-FILE> postgresql/backups
 ```
-##### 5 Modify env_template as needed
+##### 5 Modify env_template as needed (optional)
 The only variables actually needed to change in *env_template* are 
 - *COMPOSE_PROJECT_NAME* -> to the name you want to give the project, e.g. *demo*, *test*, or the name of your client).
   From this name, all images and container names are derived.
 - *HOST_IP*  -> to to the IP your host has, though you can leave it with 0.0.0.0 to work locally.
 - *POSTGRES_IMAGE* -> to the Postgres version you want to use.
-- *ADEMPIERE_GITHUB_VERSION* -> to the DB version needed.
-- *ADEMPIERE_GITHUB_COMPRESSED_FILE* -> to the DB version needed.
+- *ADEMPIERE_GITHUB_VERSION* -> to the DB version needed. This applies only if you want to restore from the Github official ADempiere release.
+- *ADEMPIERE_GITHUB_COMPRESSED_FILE* -> to the DB version needed. This applies only if you want to restore from the Github official ADempiere release, too.
 
 ![ADempiere Template](docs/ADempiere_All_Services_env_template.png)
 
 Other values in *env_template* are default values. 
 Feel free to change them accordingly to your wishes/purposes.
 There should be no need to change file *docker-compose.yml*.
-##### 6 Copy env_template if it was modified
+##### 6 Copy env_template if it was modified (optional)
 Once you modified *env_template* as needed, copy it to *.env*. This is not needed if you run *start-all.sh*. 
 ```Shell
 cp env_template .env
