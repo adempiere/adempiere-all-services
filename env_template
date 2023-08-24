@@ -1,10 +1,10 @@
 ## Generic Restart
 GENERIC_RESTART="always"
-CLIENT_NAME="saprod"
+CLIENT_NAME="demo"
 COMPOSE_PROJECT_NAME=adempiere-${CLIENT_NAME}
 
 # Global settings
-HOST_IP=192.168.1.21
+HOST_IP=0.0.0.0
 HOST_URL=http://${HOST_IP}
 
 TIMEZONE_PATH_ON_HOST="/etc/timezone"
