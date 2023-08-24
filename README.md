@@ -147,9 +147,9 @@ cp <PATH-TO-BACKUP-FILE> postgresql/backups
 ```
 ##### 5 Modify env_template as needed
 The only variables actually needed to change in *env_template* are 
-- *COMPOSE_PROJECT_NAME* -> to the name you want to give the project, e.g. the name of your client).
+- *COMPOSE_PROJECT_NAME* -> to the name you want to give the project, e.g. *demo*, *test*, or the name of your client).
   From this name, all images and container names are derived.
-- *HOST_IP*  -> to to the IP your host has.
+- *HOST_IP*  -> to to the IP your host has, though you can leave it with 0.0.0.0 to work locally.
 - *POSTGRES_IMAGE* -> to the Postgres version you want to use.
 - *ADEMPIERE_GITHUB_VERSION* -> to the DB version needed.
 - *ADEMPIERE_GITHUB_COMPRESSED_FILE* -> to the DB version needed.
