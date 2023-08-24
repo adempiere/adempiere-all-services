@@ -9,9 +9,6 @@ if [[ -z `psql -Atqc '\list adempiere' postgres` ]]  # Test database existence
 then
     echo "The database 'adempiere' does not exist -->> it will be created and restored"
     createuser adempiere -dlrs
-    
-    createuser novatech -DlRS  # User "novatech" only because a customer of Westfalia (for others: delete line). No create DB, no create role, no SuperUser
-    
     psql -tAc "alter user adempiere password 'adempiere';"
     createdb -U adempiere adempiere
     

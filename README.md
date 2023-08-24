@@ -1,5 +1,5 @@
 # ADempiere All Services
-This application downloads the required images, runs the configured containers, restores the database if needed on your local machine just by calling a script!
+This application downloads the required images, runs the configured containers and restores the database if needed on your local machine just by calling a script!
  
 It consists of a *docker compose* project that defines all services needed to run ADempiere on ZK and Vue. 
  
@@ -16,7 +16,6 @@ Benefits of the application:
 - Ideal for testing situations due to its ease of configuration and execution.
 - No need of deep knowledge of Docker, Images or Postgres.
 - Every container, image and object is unique, derived from a configuration file.
-- In future: It can be executed concurrently for different customers on the same host by just changing the project name and running anew.
 
 ## Example of Application Running
 ![ADempiere Vue](docs/ADempiere_All_Services_Vue.gif)
@@ -25,7 +24,8 @@ Benefits of the application:
 
 ## General Explanations
 ### User's perspective
-From a user's point of view, the application consists of the following.
+From a user's point of view, the application consists of the following calls.
+
 Take note that the ports are defined in file *env_template* as external ports and can be changed if needed or desired.
 - A home web site accesible via port **8080**
   From which all applications can be called
@@ -63,11 +63,11 @@ The application stack as graphic:
   Variables used in this file are taken from file *.env*.
 - *start-all.sh*: shell script to automatically execute docker compose.
   The persistent directory (database) and the backup directory are created when needed, the file *env_template* is copied to *.env* and docker compose is started.
-- *stop-and-delete-all.sh*: shell script to delete all containers, images, networks, cache and volumnes created with *start-all.sh* or by executing *docker-compose.yml*.
+- *stop-and-delete-all.sh*: shell script to delete all containers, images, networks, cache and volumes created with *start-all.sh* or by executing *docker-compose.yml*.
   After executing this shell, no trace of the application will be left over. Only the persistent directory will not be affected.
 - *postgresql/Dockerfile*: the Dockerfile used.
   It mainly copies postgresql/initdb.sh to the container, so it can be executed at start.
-- *postgresql/initdb.sh*: shell script executed when Postgres starts. 
+- *postgresql/initdb.sh*: shell script executed in the container when Postgres starts. 
   If there is a database named "adempiere", nothing happens.
   If there is no database named "adempiere", the script checks if there is a database seed file in the backups directory. 
   - If there is one, it launches a restore database.
@@ -82,6 +82,9 @@ The application stack as graphic:
   If there is a seed, but a database exists already, there will be no restore.
   This directory is useful when creating a backup: it can be created here, without needing to transfer it from the container to the host.
 - *docs*: directory containing images and documents used in this README file.
+
+## Next Functionality
+It can be executed concurrently for different customers databases using the same database server on the same host by just changing the project name and running anew. The only open issue is where Adempiere calls the database.
 
 ## Installation
 ### Requirements
@@ -143,7 +146,7 @@ mkdir postgresql/backups
 cp <PATH-TO-BACKUP-FILE> postgresql/backups
 ```
 ##### 5 Modify env_template as needed
-The only variables actually needed to change are 
+The only variables actually needed to change in *env_template* are 
 - *COMPOSE_PROJECT_NAME* -> to the name you want to give the project, e.g. the name of your client).
   From this name, all images and container names are derived.
 - *HOST_IP*  -> to to the IP your host has.
